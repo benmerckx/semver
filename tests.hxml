@@ -1,0 +1,3 @@
+-lib tink_parse
+-cp tests
+-main RunTests

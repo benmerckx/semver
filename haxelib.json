@@ -1,0 +1,14 @@
+{
+  "name": "semver",
+  "license": "MIT",
+  "tags": [],
+  "classPath": "src",
+  "contributors": [
+    "benmerckx"
+  ],
+  "releasenote": "initial release",
+  "version": "0.0.0",
+  "dependencies": {
+    "tink_parse": ""
+  }
+}
