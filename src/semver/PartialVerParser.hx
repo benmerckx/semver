@@ -11,11 +11,11 @@ class PartialVerParser extends SemVerParser {
       return version;
     }
     version.major = optionalVersionNumber(true);
-    if (version.major.match(None)) done(2);
+    if (version.major.match(None)) return done(2);
     version.minor = optionalVersionNumber(false);
-    if (version.minor.match(None)) done(1);
+    if (version.minor.match(None)) return done(1);
     version.patch = optionalVersionNumber(false);
-    if (version.patch.match(None)) done(0);
+    if (version.patch.match(None)) return version;
     version.prerelease = identifiers('-');
     version.metadata = identifiers('+');
     return version;
