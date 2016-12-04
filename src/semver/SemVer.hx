@@ -94,14 +94,20 @@ abstract SemVer(SemVerData) from SemVerData {
 		return compare(a, b) != 0;
 
   static public function comparePartial(a: SemVer, b: PartialVer): Int {
+    inline function greater()
+      return 
+        if (b.prerelease.match(None) && !a.prerelease.match(None)) -1
+        else 1;
+
     var i = 0;
     var versions = a.versions();
     for (option in b.versions())
       switch option {
-        case None: return 1;
+        case None:
+          return greater();
         case Some(v):
           if (v > versions[i]) return -1;
-          else if (v < versions[i]) return 1;
+          else if (v < versions[i]) return greater();
           i++;
       }
     return compareIdentifiers(a.prerelease, b.prerelease);
@@ -113,7 +119,7 @@ abstract SemVer(SemVerData) from SemVerData {
 
 	@:op(a >= b)
   static inline function gteqPartial(a: SemVer, b: PartialVer)
-		return comparePartial(a, b) != -1;
+		return eqPartial(a, b) || comparePartial(a, b) != -1;
 
 	@:op(a < b)
   static inline function ltPartial(a: SemVer, b: PartialVer)
@@ -121,7 +127,7 @@ abstract SemVer(SemVerData) from SemVerData {
 
 	@:op(a <= b)
   static inline function lteqPartial(a: SemVer, b: PartialVer)
-		return comparePartial(a, b) != 1;
+		return eqPartial(a, b) || comparePartial(a, b) != 1;
 
 	@:op(a == b)
   static function eqPartial(a: SemVer, b: PartialVer) {
@@ -129,7 +135,10 @@ abstract SemVer(SemVerData) from SemVerData {
     var versions = [a.major, a.minor, a.patch];
     for (option in [b.major, b.minor, b.patch])
       switch option {
-        case None: return true;
+        case None:
+          return 
+            if (b.prerelease.match(None) && !a.prerelease.match(None)) false
+            else true;
         case Some(v):
           if (v > versions[i]) return false;
           else if (v < versions[i]) return false;

@@ -53,14 +53,17 @@ abstract Condition(ConditionData) from ConditionData {
                     case Some(v): v;
                   }
                 );
-              var upper = [];
+              var upper = [], end = false;
               for (version in lower)
-                if (version > 0 && (upper.length == 0 || upper[upper.length - 1] == 0))
-                  upper.push(version + 1)
-                else
+                if (!end && version > 0) {
+                  upper.push(version + 1);
+                  end = true;
+                } else {
                   upper.push(0);
+                }
               
               var min: PartialVer = lower, max: PartialVer = upper;
+              min.prerelease = max.prerelease = partial.prerelease;
               version >= min && version < max;
             }
         }

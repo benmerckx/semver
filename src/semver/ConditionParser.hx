@@ -29,6 +29,7 @@ class ConditionParser extends PartialVerParser {
       else if (allow('=')) Some(Eq)
       else if (allow('>')) Some(Gt)
       else if (allow('<')) Some(Lt)
+      else if (allow('~>')) Some(Tilde)
       else if (allow('~')) Some(Tilde)
       else if (allow('^')) Some(Caret)
       else None;
