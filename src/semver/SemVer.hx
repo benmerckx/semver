@@ -40,15 +40,15 @@ abstract SemVer(SemVerData) from SemVerData {
         return 1;
       else if (verA[i] < verB[i]) 
         return -1;
-    return compareIdentifiers(a, b);
+    return compareIdentifiers(a.prerelease, b.prerelease);
   }
 
-  static function compareIdentifiers(a: SemVer, b: SemVer): Int {
+  static function compareIdentifiers(a: Option<Array<String>>, b: Option<Array<String>>): Int {
     function val(input: String): Dynamic {
       var num = Std.parseInt(input);
       return num == null ? input : num;
     }
-    switch [a.prerelease, b.prerelease] {
+    switch [a, b] {
       case [None, None]: return 0;
       case [None, Some(_)]: return 1;
       case [Some(_), None]: return -1;
@@ -91,5 +91,54 @@ abstract SemVer(SemVerData) from SemVerData {
 	@:op(a != b) 
   static inline function neq(a: SemVer, b: SemVer)
 		return compare(a, b) != 0;
+
+  static public function comparePartial(a: SemVer, b: PartialVer): Int {
+    var i = 0;
+    var versions = [a.major, a.minor, a.patch];
+    for (option in [b.major, b.minor, b.patch])
+      switch option {
+        case None: return 1;
+        case Some(v):
+          if (v > versions[i]) return -1;
+          else if (v < versions[i]) return 1;
+          i++;
+      }
+    return compareIdentifiers(a.prerelease, b.prerelease);
+  }
+
+  @:op(a > b)
+  static inline function gtPartial(a: SemVer, b: PartialVer)
+		return comparePartial(a, b) == 1;
+
+	@:op(a >= b)
+  static inline function gteqPartial(a: SemVer, b: PartialVer)
+		return comparePartial(a, b) != -1;
+
+	@:op(a < b)
+  static inline function ltPartial(a: SemVer, b: PartialVer)
+		return comparePartial(a, b) == -1;
+
+	@:op(a <= b)
+  static inline function lteqPartial(a: SemVer, b: PartialVer)
+		return comparePartial(a, b) != 1;
+
+	@:op(a == b)
+  static function eqPartial(a: SemVer, b: PartialVer) {
+    var i = 0;
+    var versions = [a.major, a.minor, a.patch];
+    for (option in [b.major, b.minor, b.patch])
+      switch option {
+        case None: return true;
+        case Some(v):
+          if (v > versions[i]) return false;
+          else if (v < versions[i]) return false;
+          i++;
+      }
+    return compareIdentifiers(a.prerelease, b.prerelease) == 0;
+  }
+
+	@:op(a != b)
+  static inline function neqPartial(a: SemVer, b: PartialVer)
+		return !eqPartial(a, b);
 
 }
