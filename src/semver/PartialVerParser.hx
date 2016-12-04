@@ -13,6 +13,7 @@ class PartialVerParser extends SemVerParser {
     version.patch = optionalVersionNumber(false);
     if (version.patch.match(None)) return version;
     version.prerelease = identifiers('-');
+    version.metadata = identifiers('+');
     return version;
   }
   

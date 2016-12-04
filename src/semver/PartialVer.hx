@@ -7,6 +7,7 @@ typedef PartialVerData = {
   var minor: Option<Int>;
   var patch: Option<Int>;
   var prerelease: Option<Array<String>>;
+  var metadata: Option<Array<String>>;
 }
 
 @:forward
@@ -17,7 +18,8 @@ abstract PartialVer(PartialVerData) from PartialVerData {
       major: None,
       minor: None,
       patch: None,
-      prerelease: None
+      prerelease: None,
+      metadata: None
     }
   
   @:from
@@ -39,6 +41,7 @@ abstract PartialVer(PartialVerData) from PartialVerData {
       }
     }
     response.add(SemVer.formatIdentifiers('-', this.prerelease));
+    response.add(SemVer.formatIdentifiers('+', this.metadata));
     return response.toString();
   }
 

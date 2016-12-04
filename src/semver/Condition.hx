@@ -32,7 +32,7 @@ abstract Condition(ConditionData) from ConditionData {
     return switch op {
       case GtEq: '>=';
       case LtEq: '<=';
-      case Eq: '=';
+      case Eq: '';
       case Gt: '>';
       case Lt: '<';
       case Tilde: '~';

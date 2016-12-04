@@ -26,11 +26,14 @@ class SemVerParser extends ParserBase<IntIterator, Error> {
   
   function versionNumber(first = false): Int {
     if (!first) expectHere('.');
-    if (allow('0')) 
-      die('Version must not contain leading zeroes');
-    var buf = readWhile(Char.DIGIT);
+    var buf = source[pos ... {
+      doReadWhile(Char.DIGIT);
+      pos;
+    }];
     if (buf.length == 0)
       die('Integer expected');
+    else if (buf.length > 1 && buf.fastGet(0) == '0'.code)
+      die('Version must not contain leading zeroes');
     return Std.parseInt(buf);
   }
 
