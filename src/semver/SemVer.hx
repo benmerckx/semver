@@ -16,5 +16,19 @@ abstract SemVer(SemVerData) from SemVerData {
   @:from
   static function fromString(str: String)
     return new SemVerParser(str).version();
-    
+
+  @:to
+  public function toString(): String
+    return 
+      [this.major, this.minor, this.patch].join('.')
+      + formatIdentifiers('-', this.prerelease)
+      + formatIdentifiers('+', this.metadata);
+
+  @:allow(semver.PartialVer)
+  static function formatIdentifiers(prefix: String, ids: Option<Array<String>>)
+    return switch ids {
+      case None: '';
+      case Some(v): prefix + v.join('.');
+    }
+
 }

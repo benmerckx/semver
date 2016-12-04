@@ -1,8 +1,5 @@
 package semver;
 
-import tink.parse.Char;
-import tink.parse.Filter;
-
 using tink.CoreApi;
 
 class PartialVerParser extends SemVerParser {
@@ -21,11 +18,11 @@ class PartialVerParser extends SemVerParser {
   
   function optionalVersionNumber(first = false): Option<Int>
     return 
-      if (!first && !allow('.')) 
+      if (done())
         None;
-      else if (allow('*') || allow('x') || allow('X'))
+      else if (!first && !allowHere('.')) 
         None;
-      else if (is(' '.code) || pos == max)
+      else if (allowHere('*') || allowHere('x') || allowHere('X'))
         None;
       else
         Some(versionNumber(true));

@@ -25,7 +25,7 @@ class SemVerParser extends ParserBase<IntIterator, Error> {
     }
   
   function versionNumber(first = false): Int {
-    if (!first) expect('.');
+    if (!first) expectHere('.');
     if (allow('0')) 
       die('Version must not contain leading zeroes');
     var buf = readWhile(Char.DIGIT);
@@ -35,16 +35,20 @@ class SemVerParser extends ParserBase<IntIterator, Error> {
   }
 
   function identifiers(prefix: String)
-    return allow(prefix) ? Some(readIdentifiers()) : None;
+    return allowHere(prefix) ? Some(readIdentifiers()) : None;
 
   function readIdentifiers(): Array<String>
     return [
       do readWhile(FILTER_IDENT)
-      while (allow('.'))
+      while (allowHere('.'))
     ];
   
   override function makeError(message: String, pos: IntIterator)
-    return new Error('$message at "${source[pos]}"');
+    return new Error(
+      '$message at ' +
+      '"${source[pos]}"(${@:privateAccess pos.min}-${@:privateAccess pos.max})' +
+      ' in "$source"'
+    );
   
   override function doMakePos(from, to)
     return from ... to;

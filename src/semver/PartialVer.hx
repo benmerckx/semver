@@ -23,5 +23,23 @@ abstract PartialVer(PartialVerData) from PartialVerData {
   @:from
   static function fromString(str: String)
     return new PartialVerParser(str).partial();
-    
+  
+  @:to
+  public function toString(): String {
+    var response = new StringBuf();
+    for (num in [this.major, this.minor, this.patch]) {
+      if (response.length > 0)
+        response.add('.');
+      switch num {
+        case Some(ver): 
+          response.add(ver);
+        case None:
+          response.add('*');
+          return response.toString();
+      }
+    }
+    response.add(SemVer.formatIdentifiers('-', this.prerelease));
+    return response.toString();
+  }
+
 }
