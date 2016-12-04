@@ -31,10 +31,11 @@ abstract SemVer(SemVerData) from SemVerData {
       case Some(v): prefix + v.join('.');
     }
 
+  public function versions()
+    return [this.major, this.minor, this.patch];
+
   static public function compare(a: SemVer, b: SemVer): Int {
-    inline function versions(ver: SemVer)
-      return [ver.major, ver.minor, ver.patch];
-    var verA = versions(a), verB = versions(b);
+    var verA = a.versions(), verB = b.versions();
     for (i in 0 ... 3)
       if (verA[i] > verB[i]) 
         return 1;
@@ -94,8 +95,8 @@ abstract SemVer(SemVerData) from SemVerData {
 
   static public function comparePartial(a: SemVer, b: PartialVer): Int {
     var i = 0;
-    var versions = [a.major, a.minor, a.patch];
-    for (option in [b.major, b.minor, b.patch])
+    var versions = a.versions();
+    for (option in b.versions())
       switch option {
         case None: return 1;
         case Some(v):

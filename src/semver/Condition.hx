@@ -28,8 +28,41 @@ abstract Condition(ConditionData) from ConditionData {
           case Eq: version == partial;
           case Gt: version > partial;
           case Lt: version < partial;
-          case Tilde: throw 'Todo';
-          case Caret: throw 'Todo';
+          case Tilde:
+            if (partial.major.match(None)) {
+              true;
+            } else {
+              var upper = partial.clone();
+              switch partial.minor {
+                case Some(v): upper.minor = Some(v+1);
+                case None: switch partial.major {
+                  case Some(v): upper.major = Some(v+1);
+                  default:
+                }
+              }
+              version >= partial && version < upper;
+            }
+          case Caret:
+            if (partial.major.match(None)) {
+              true;
+            } else {
+              var lower = partial.versions()
+                .map(function (version)
+                  return switch version {
+                    case None: 0;
+                    case Some(v): v;
+                  }
+                );
+              var upper = [];
+              for (version in lower)
+                if (version > 0 && (upper.length == 0 || upper[upper.length - 1] == 0))
+                  upper.push(version + 1)
+                else
+                  upper.push(0);
+              
+              var min: PartialVer = lower, max: PartialVer = upper;
+              version >= min && version < max;
+            }
         }
     }
 

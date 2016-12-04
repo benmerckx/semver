@@ -45,4 +45,28 @@ abstract PartialVer(PartialVerData) from PartialVerData {
     return response.toString();
   }
 
+  public function versions()
+    return [this.major, this.minor, this.patch];
+
+  @:from
+  static function fromVersions(versions: Array<Int>): PartialVer {
+    if (versions.length != 3) throw 'Expected 3 arguments';
+    return {
+      major: Some(versions[0]),
+      minor: Some(versions[1]),
+      patch: Some(versions[2]),
+      prerelease: None, metadata: None
+    }
+  }
+
+  public function clone(): PartialVer {
+    var copy = new PartialVer();
+    copy.major = this.major;
+    copy.minor = this.minor;
+    copy.patch = this.patch;
+    copy.prerelease = this.prerelease;
+    copy.metadata = this.metadata;
+    return copy;
+  }
+
 }

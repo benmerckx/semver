@@ -18,8 +18,8 @@ class RunTests {
     trace(('1': RangeSet));
     trace(('~1.2.6 ^12  || 1.2 - 5.3 > 5   ': RangeSet));
     
-    var range: RangeSet = '1.6.1';
-    trace(range.satisfies('1.6.1'));
+    var range: RangeSet = '^0.1.0';
+    trace(range.satisfies('0.2.1'));
     travix.Logger.exit(0);
   }
   
